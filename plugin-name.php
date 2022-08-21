@@ -82,8 +82,8 @@ if ( ! class_exists( 'plugin_name' ) ) {
 		 * Include required core files
 		 */
 		public function includes() {
-            // Example
-			require_once __DIR__ . '/includes/loader.php';
+			// Example
+			//require_once __DIR__ . '/includes/loader.php';
 
 			// Load custom functions and hooks
 			require_once __DIR__ . '/includes/includes.php';
@@ -113,14 +113,21 @@ if ( ! class_exists( 'plugin_name' ) ) {
 		 * Define plugin_name actions
 		 */
 		public function define_actions() {
-			//
-		}
+			add_shortcode( 'mc-citacion', 'we_remote_shortcode_mc_citacion' );
+			add_action( 'add_meta_boxes', 'we_remote_meta_boxes' );
+			add_action( 'save_post', 'we_remote_save_wp_editor_content' );
+			add_action( 'admin_menu', 'we_remote_admin_menu' );
 
-		/**
-		 * Define plugin_name menus
-		 */
+			add_filter('cron_schedules','we_remote_cron_schedules');
+
+			if (! wp_next_scheduled ( 'we_remote_scans_posts' )) {
+				wp_schedule_event(time(), '1min', 'we_remote_scans_posts');
+			}
+
+			add_action('we_remote_scans_posts', 'we_remote_scans_posts');
+		}
 		public function define_menus() {
-            //
+
 		}
 	}
 
